@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import ProfilePhotoEditor from "../components/ProfilePhotoEditor";
+import { useCommunity } from "@/context/CommunityContext";
 import {
   User,
   MapPin,
@@ -26,8 +27,47 @@ import {
 import axios from "axios";
 import { useState, useEffect } from "react";
 
+const communities = [
+  {
+    id: "travel",
+    name: "Travel",
+    icon: Plane,
+    color: "text-travel",
+    bgColor: "bg-travel/10",
+  },
+  {
+    id: "dsa",
+    name: "DSA",
+    icon: Code,
+    color: "text-dsa",
+    bgColor: "bg-dsa/10",
+  },
+  {
+    id: "mental-wellness",
+    name: "Wellness",
+    icon: Brain,
+    color: "text-wellness",
+    bgColor: "bg-wellness/10",
+  },
+  {
+    id: "startup",
+    name: "Startup",
+    icon: Rocket,
+    color: "text-startup",
+    bgColor: "bg-startup/10",
+  },
+  {
+    id: "gym",
+    name: "Gym",
+    icon: Dumbbell,
+    color: "text-gym",
+    bgColor: "bg-gym/10",
+  },
+];
+
 const Profile = () => {
   const { toast } = useToast();
+  const { joinedCommunities } = useCommunity();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     name: "",
@@ -37,6 +77,7 @@ const Profile = () => {
     bio: "",
     profile_photo: "", // ← add this
   });
+  const myCommunities = communities.filter(c => joinedCommunities.includes(c.id));
   const [tempProfile, setTempProfile] = useState(profile);
   // --- 1. Fetch Profile Data on Load ---
   useEffect(() => {
@@ -109,43 +150,6 @@ const Profile = () => {
     // Sabse aasan tarika window.location hai taki state fresh ho jaye
     window.location.href = "/";
   };
-  const communities = [
-    {
-      id: "travel",
-      name: "Travel",
-      icon: Plane,
-      color: "text-travel",
-      bgColor: "bg-travel/10",
-    },
-    {
-      id: "dsa",
-      name: "DSA",
-      icon: Code,
-      color: "text-dsa",
-      bgColor: "bg-dsa/10",
-    },
-    {
-      id: "mental-wellness",
-      name: "Wellness",
-      icon: Brain,
-      color: "text-wellness",
-      bgColor: "bg-wellness/10",
-    },
-    {
-      id: "startup",
-      name: "Startup",
-      icon: Rocket,
-      color: "text-startup",
-      bgColor: "bg-startup/10",
-    },
-    {
-      id: "gym",
-      name: "Gym",
-      icon: Dumbbell,
-      color: "text-gym",
-      bgColor: "bg-gym/10",
-    },
-  ];
 
   // const Profile = () => {
   //   const [isEditing, setIsEditing] = useState(false);
@@ -314,30 +318,42 @@ const Profile = () => {
                     <h2 className="text-xl font-display font-semibold mb-4">
                       My Communities
                     </h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      {communities.map((community, index) => (
-                        <motion.a
-                          key={community.id}
-                          href={`/community/${community.id}`}
-                          className={`glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/50 transition-colors`}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          whileHover={{ scale: 1.05 }}
+                    {myCommunities.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <p className="mb-2">You haven't joined any communities yet.</p>
+                        <a
+                          href="/communities"
+                          className="text-primary hover:underline text-sm"
                         >
-                          <div
-                            className={`w-12 h-12 rounded-lg ${community.bgColor} flex items-center justify-center`}
+                          Browse Communities →
+                        </a>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        {myCommunities.map((community, index) => (
+                          <motion.a
+                            key={community.id}
+                            href={`/community/${community.id}`}
+                            className="glass-card p-4 flex flex-col items-center gap-2 hover:border-primary/50 transition-colors"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            whileHover={{ scale: 1.05 }}
                           >
-                            <community.icon
-                              className={`w-6 h-6 ${community.color}`}
-                            />
-                          </div>
-                          <span className="text-sm font-medium">
-                            {community.name}
-                          </span>
-                        </motion.a>
-                      ))}
-                    </div>
+                            <div
+                              className={`w-12 h-12 rounded-lg ${community.bgColor} flex items-center justify-center`}
+                            >
+                              <community.icon
+                                className={`w-6 h-6 ${community.color}`}
+                              />
+                            </div>
+                            <span className="text-sm font-medium">
+                              {community.name}
+                            </span>
+                          </motion.a>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Activity Stats */}

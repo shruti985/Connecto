@@ -13,67 +13,70 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { CommunityProvider } from "@/context/CommunityContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Protected Routes: Sirf login ke baad dikhenge */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Index />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/messages"
-            element={
-              <ProtectedRoute>
-                <Messages />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/communities"
-            element={
-              <ProtectedRoute>
-                <Communities />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/community/:id" element={<CommunityPage />} />
-          <Route
-            path="/find-buddies"
-            element={
-              <ProtectedRoute>
-                <FindBuddies />
-              </ProtectedRoute>
-            }
-          />
+      <CommunityProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Protected Routes: Sirf login ke baad dikhenge */}
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/messages"
+              element={
+                <ProtectedRoute>
+                  <Messages />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/communities"
+              element={
+                <ProtectedRoute>
+                  <Communities />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/community/:id" element={<CommunityPage />} />
+            <Route
+              path="/find-buddies"
+              element={
+                <ProtectedRoute>
+                  <FindBuddies />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Public Routes: Har koi dekh sakta hai */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+            {/* Public Routes: Har koi dekh sakta hai */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
-          {/* Catch-all */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </CommunityProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
